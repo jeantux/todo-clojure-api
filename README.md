@@ -6,21 +6,8 @@ This is an api for an all-list project
 
 ## Usage
 
-FIXME: explanation
-
     $ java -jar todo-clojure-api-0.1.0-standalone.jar [args]
 
-## Options
-
-FIXME: listing of options this app accepts.
-
-## Examples
-
-...
-
-### Bugs
-
-...
 
 ### Any Other Sections
 ### That You Think
