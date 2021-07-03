@@ -1,10 +1,8 @@
 # todo-clojure-api
 
-FIXME: description
+This is an api for an all-list project 
 
 ## Installation
-
-Download from http://example.com/FIXME.
 
 ## Usage
 
