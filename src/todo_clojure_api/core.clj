@@ -12,8 +12,8 @@
   {:name :db-interceptor
    :enter assoc-store})
             
-(defn get-index []
-  {:status 200 :body (str "Welcome to todo-clojure-api")})
+(defn get-index [req]
+  {:status 201 :body (str "Welcome to todo-clojure-api")})
 
 (defn new-task-map [uuid name status]
   {:id uuid :name name :status status})
@@ -29,16 +29,25 @@
     {:status 201 :body {:message "Task create with succes", :task task}}
   ))
 
+(defn delete-task [req]
+  (let [store (:store req)
+        uuid (get-in req [:path-params :id])
+        uuid-string (java.util.UUID/fromString uuid)
+       ]
+  (swap! store dissoc uuid-string)
+  {:status 200 :body {:message "Task removed with success"}}))
+
 (defn all-tasks [req]
   {:status 200 :body @(:store req)})
 
 (def routes (route/expand-routes
           #{["/" :get get-index :route-name :index]
-            ["/task" :post [db-interceptor new-task]  :route-name :new-task]
-            ["/all-tasks" :get [db-interceptor all-tasks]  :route-name :all-tasks]}))
+            ["/all-tasks" :get [db-interceptor all-tasks] :route-name :all-tasks]
+            ["/task" :post [db-interceptor new-task] :route-name :new-task]
+            ["/task/:id" :delete [db-interceptor delete-task] :route-name :delete-task]}))
 
 (def service-map {::http/routes routes
-                  ::http/port   9999
+                  ::http/port   9000
                   ::http/type   :jetty
                   ::http/join?  :false})
 
