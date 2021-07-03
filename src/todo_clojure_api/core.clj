@@ -37,6 +37,18 @@
   (swap! store dissoc uuid-string)
   {:status 200 :body {:message "Task removed with success"}}))
 
+  (defn update-task [req]
+    (let [uuid (get-in req [:path-params :id])
+          id-string (java.util.UUID/fromString uuid)
+          name (get-in req [:query-params :name])
+          status (get-in req [:query-params :status])
+          task (new-task-map uuid name status)
+          store (:store req)]
+      
+      (swap! store assoc id-string task)
+      {:status 201 :body {:message "Task updated with succes", :task task}}
+    ))
+
 (defn all-tasks [req]
   {:status 200 :body @(:store req)})
 
@@ -44,7 +56,8 @@
           #{["/" :get get-index :route-name :index]
             ["/all-tasks" :get [db-interceptor all-tasks] :route-name :all-tasks]
             ["/task" :post [db-interceptor new-task] :route-name :new-task]
-            ["/task/:id" :delete [db-interceptor delete-task] :route-name :delete-task]}))
+            ["/task/:id" :delete [db-interceptor delete-task] :route-name :delete-task]
+            ["/task/:id" :patch [db-interceptor update-task] :route-name :update-task]}))
 
 (def service-map {::http/routes routes
                   ::http/port   9000
